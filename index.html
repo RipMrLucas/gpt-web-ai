@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free AI Models Hub - Text & Image</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #0f172a;
+            --bg-light: #1e293b;
+            --text: #f1f5f9;
+            --text-muted: #cbd5e1;
+            --border: #334155;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 15px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 50px;
+        }
+
+        section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--primary);
+            border-left: 4px solid var(--secondary);
+            padding-left: 15px;
+        }
+
+        /* Models Grid */
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .model-card {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .model-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.2);
+        }
+
+        .model-card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .model-card h3 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        .model-card-provider {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .model-card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            flex-grow: 1;
+            margin-bottom: 15px;
+        }
+
+        .model-card-caps {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .cap-badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .cap-badge.image {
+            background: var(--secondary);
+        }
+
+        /* Playground */
+        .playground {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 25px;
+        }
+
+        .model-selector {
+            margin-bottom: 25px;
+        }
+
+        .model-selector label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .model-selector select {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .input-section {
+            margin-bottom: 20px;
+        }
+
+        .text-input-area,
+        .image-input-area {
+            margin-bottom: 20px;
+        }
+
+        .text-input-area label,
+        .image-input-area label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        #text-input {
+            width: 100%;
+            padding: 15px;
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        #text-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        #image-input {
+            padding: 12px;
+            background: var(--bg);
+            color: var(--text);
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .image-preview {
+            margin-top: 12px;
+        }
+
+        .image-preview img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        /* Buttons */
+        .send-btn {
+            width: 100%;
+            padding: 14px 25px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .send-btn:active {
+            transform: translateY(0);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Response */
+        .response-section {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 100px;
+            display: none;
+        }
+
+        .response-section.show {
+            display: block;
+        }
+
+        .response-section h4 {
+            color: var(--success);
+            margin-bottom: 12px;
+        }
+
+        .response-section p {
+            color: var(--text);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Models Info */
+        .models-info {
+            display: grid;
+            gap: 20px;
+        }
+
+        .info-card {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .info-card h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card p {
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .info-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .info-link {
+            display: inline-block;
+            padding: 8px 15px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .info-link:hover {
+            background: var(--secondary);
+            transform: translateX(2px);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .models-grid {
+                grid-template-columns: 1fr;
+            }
+
+            section h2 {
+                font-size: 1.4rem;
+            }
+
+            .playground {
+                padding: 15px;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* API Settings Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: var(--secondary);
+        }
+
+        .api-key-group {
+            margin-bottom: 20px;
+        }
+
+        .api-key-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .api-key-input-wrapper {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .api-key-group input[type="password"],
+        .api-key-group input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .api-key-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .get-key-link {
+            display: inline-block;
+            padding: 8px 12px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .get-key-link:hover {
+            background: var(--secondary);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .modal-footer button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .save-keys-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .save-keys-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .close-modal-btn {
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .close-modal-btn:hover {
+            background: var(--border);
+        }
+
+        .api-settings-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .api-settings-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(236, 72, 153, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🤖 Free AI Models Hub</h1>
+            <p>Access free AI models for text and image processing</p>
+        </header>
+        <!-- API Settings Button -->
+        <button class="api-settings-btn" onclick="openApiModal()">⚙️ API Key Settings</button>
+
+        <!-- API Keys Modal -->
+        <div id="apiModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🔑 API Key Settings</h2>
+                    <button class="close-btn" onclick="closeApiModal()">✕</button>
+                </div>
+
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Enter your API keys below. Keys are stored locally in your browser only.</p>
+
+                <div class="api-key-group">
+                    <label for="openai-key">OpenAI API Key</label>
+                    <div class="api-key-input-wrapper">
+                        <input type="password" id="openai-key" placeholder="sk-...">
+                        <a href="https://platform.openai.com/api-keys" target="_blank" class="get-key-link">Get Key</a>
+                    </div>
+                    <small style="color: var(--text-muted);">✅ $5 free credits for new accounts</small>
+                </div>
+
+                <div class="api-key-group">
+                    <label for="google-key">Google Gemini API Key</label>
+                    <div class="api-key-input-wrapper">
+                        <input type="password" id="google-key" placeholder="AIz...">
+                        <a href="https://aistudio.google.com/app/apikey" target="_blank" class="get-key-link">Get Key</a>
+                    </div>
+                    <small style="color: var(--text-muted);">✅ FREE: 50 req/min, 1.5M daily tokens</small>
+                </div>
+
+                <div class="api-key-group">
+                    <label for="cohere-key">Cohere API Key</label>
+                    <div class="api-key-input-wrapper">
+                        <input type="password" id="cohere-key" placeholder="...">
+                        <a href="https://dashboard.cohere.ai/" target="_blank" class="get-key-link">Get Key</a>
+                    </div>
+                    <small style="color: var(--text-muted);">✅ FREE: Unlimited requests</small>
+                </div>
+
+                <div class="api-key-group">
+                    <label for="groq-key">Groq API Key</label>
+                    <div class="api-key-input-wrapper">
+                        <input type="password" id="groq-key" placeholder="gsk_...">
+                        <a href="https://console.groq.com/" target="_blank" class="get-key-link">Get Key</a>
+                    </div>
+                    <small style="color: var(--text-muted);">⚡ FASTEST LLM inference available</small>
+                </div>
+
+                <div class="api-key-group">
+                    <label for="mistral-key">Mistral API Key</label>
+                    <div class="api-key-input-wrapper">
+                        <input type="password" id="mistral-key" placeholder="...">
+                        <a href="https://console.mistral.ai/" target="_blank" class="get-key-link">Get Key</a>
+                    </div>
+                    <small style="color: var(--text-muted);">✅ FREE: 50,000 tokens/day</small>
+                </div>
+
+                <div class="api-key-group">
+                    <label for="together-key">Together AI API Key</label>
+                    <div class="api-key-input-wrapper">
+                        <input type="password" id="together-key" placeholder="...">
+                        <a href="https://www.together.ai/" target="_blank" class="get-key-link">Get Key</a>
+                    </div>
+                    <small style="color: var(--text-muted);">✅ FREE: New account credits</small>
+                </div>
+
+                <div class="api-key-group">
+                    <label for="replicate-key">Replicate API Key</label>
+                    <div class="api-key-input-wrapper">
+                        <input type="password" id="replicate-key" placeholder="...">
+                        <a href="https://replicate.com/account/api-tokens" target="_blank" class="get-key-link">Get Key</a>
+                    </div>
+                    <small style="color: var(--text-muted);">✅ FREE: Image generation models</small>
+                </div>
+
+                <div class="api-key-group">
+                    <label for="huggingface-key">Hugging Face API Key</label>
+                    <div class="api-key-input-wrapper">
+                        <input type="password" id="huggingface-key" placeholder="hf_...">
+                        <a href="https://huggingface.co/settings/tokens" target="_blank" class="get-key-link">Get Key</a>
+                    </div>
+                    <small style="color: var(--text-muted);">✅ FREE: 30K inputs/month</small>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="save-keys-btn" onclick="saveApiKeys()">💾 Save Keys</button>
+                    <button class="close-modal-btn" onclick="closeApiModal()">Close</button>
+                </div>
+            </div>
+        </div>
+        <!-- AI Playground Section -->
+        <section class="playground-section">
+            <h2>🎮 AI Playground</h2>
+            <div class="playground">
+                <div class="model-selector">
+                    <label for="model-select">Select AI Model:</label>
+                    <select id="model-select" onchange="updateModelInfo()">
+                        <option value="">-- Choose a Model --</option>
+                    </select>
+                </div>
+
+                <div class="input-section">
+                    <div class="text-input-area">
+                        <label for="text-input">✍️ Text Prompt</label>
+                        <textarea id="text-input" placeholder="Ask me anything... (e.g., 'Explain quantum computing', 'Write a poem about AI', 'Analyze this image')"></textarea>
+                    </div>
+
+                    <div class="image-input-area">
+                        <label for="image-input">🖼️ Upload Image (Optional)</label>
+                        <input type="file" id="image-input" accept="image/*">
+                        <div id="image-preview" class="image-preview"></div>
+                    </div>
+                </div>
+
+                <button class="send-btn" id="sendBtn" onclick="sendToModel()">🚀 Send to AI</button>
+
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Thinking...</p>
+                </div>
+
+                <div id="response" class="response-section">
+                    <h4>✅ Response:</h4>
+                    <div id="responseContent"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Models Grid -->
+        <section class="models-section">
+            <h2>📋 Available AI Models</h2>
+            <div class="models-grid" id="modelsGrid"></div>
+        </section>
+
+        <!-- Models Info Cards -->
+        <section class="models-info-section">
+            <h2>📚 Model Details & Links</h2>
+            <div id="modelsInfo" class="models-info"></div>
+        </section>
+    </div>
+
+    <script src="models.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
