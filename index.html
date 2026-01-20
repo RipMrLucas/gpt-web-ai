@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free AI Models Hub</title>
+    <title>AI Chat</title>
     <style>
         * {
             margin: 0;
@@ -12,676 +12,286 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #0f172a;
-            color: #e2e8f0;
-            line-height: 1.6;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
         }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: 100vh;
+            gap: 0;
         }
 
-        header {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            padding: 40px 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            text-align: center;
-            border: 1px solid #334155;
+        .left {
+            background: #000;
+            border-right: 1px solid #333;
+            padding: 30px;
+            overflow-y: auto;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            color: #fff;
+        .right {
+            background: #000;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
         }
 
-        .subtitle {
-            color: #94a3b8;
-            font-size: 1.1rem;
-        }
-
-        .section {
-            background: #1e293b;
-            padding: 25px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            border: 1px solid #334155;
-        }
-
-        .section h2 {
-            color: #60a5fa;
+        h2 {
+            font-size: 1.2rem;
             margin-bottom: 20px;
-            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #fff;
         }
 
         label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 600;
-            color: #cbd5e1;
+            font-size: 0.9rem;
+            color: #999;
         }
 
-        select, input[type="text"], textarea {
+        input[type="password"],
+        input[type="text"],
+        select,
+        textarea {
             width: 100%;
             padding: 12px;
             margin-bottom: 15px;
-            background: #0f172a;
-            color: #e2e8f0;
-            border: 1px solid #334155;
-            border-radius: 6px;
+            background: #111;
+            color: #fff;
+            border: 1px solid #333;
+            border-radius: 4px;
             font-family: inherit;
             font-size: 1rem;
         }
 
-        select:focus, input:focus, textarea:focus {
+        input[type="password"]:focus,
+        input[type="text"]:focus,
+        select:focus,
+        textarea:focus {
             outline: none;
-            border-color: #60a5fa;
-            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+            border-color: #666;
+            background: #1a1a1a;
         }
 
         button {
-            background: #3b82f6;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.3s;
             width: 100%;
-            margin-bottom: 10px;
+            padding: 12px;
+            background: #222;
+            color: #fff;
+            border: 1px solid #333;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
         }
 
         button:hover {
-            background: #2563eb;
-            transform: translateY(-2px);
+            background: #333;
+            border-color: #555;
         }
 
         button:active {
-            transform: translateY(0);
+            background: #444;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .button-group button {
+            flex: 1;
+        }
+
+        a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        a:hover {
+            color: #999;
         }
 
         .response {
-            background: #0f172a;
-            border: 1px solid #334155;
+            flex: 1;
+            background: #111;
+            border: 1px solid #333;
             padding: 20px;
-            border-radius: 6px;
-            margin-top: 20px;
-            display: none;
+            border-radius: 4px;
+            margin-top: 15px;
+            overflow-y: auto;
             white-space: pre-wrap;
             word-break: break-word;
-            max-height: 400px;
-            overflow-y: auto;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            display: none;
         }
 
         .response.show {
             display: block;
         }
 
-        .response h3 {
-            color: #10b981;
-            margin-bottom: 10px;
+        textarea {
+            resize: none;
+            flex: 1;
+            margin-bottom: 15px;
+            min-height: 200px;
         }
 
         .loading {
+            color: #666;
+            font-size: 0.9rem;
             display: none;
-            text-align: center;
-            padding: 30px;
-            color: #60a5fa;
+            margin-top: 10px;
         }
 
         .loading.show {
             display: block;
         }
 
-        .spinner {
-            border: 3px solid #334155;
-            border-top-color: #60a5fa;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 10px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-header h2 {
-            color: #60a5fa;
-            margin: 0;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: #e2e8f0;
-            font-size: 2rem;
-            cursor: pointer;
-            padding: 0;
-            width: 40px;
-            height: 40px;
-        }
-
-        .close-btn:hover {
-            color: #60a5fa;
-        }
-
-        .api-group {
-            margin-bottom: 20px;
-        }
-
-        .api-group label {
-            color: #60a5fa;
-            font-weight: 600;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .api-group input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 8px;
-            background: #0f172a;
-            color: #e2e8f0;
-            border: 1px solid #334155;
-            border-radius: 6px;
-            font-size: 0.9rem;
-        }
-
-        .get-key-link {
-            display: inline-block;
-            padding: 8px 12px;
-            background: #10b981;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            margin-bottom: 8px;
-        }
-
-        .get-key-link:hover {
-            background: #059669;
-        }
-
         small {
             display: block;
-            color: #94a3b8;
-            font-size: 0.85rem;
-            margin-bottom: 12px;
+            color: #666;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            margin-bottom: 15px;
         }
 
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8rem;
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
             }
 
-            .section {
-                padding: 15px;
+            .left {
+                border-right: none;
+                border-bottom: 1px solid #333;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>🤖 Free AI Models Hub</h1>
-            <p class="subtitle">Access free AI models for text processing</p>
-        </header>
+        <!-- LEFT: API Settings -->
+        <div class="left">
+            <h2>API Settings</h2>
 
-        <!-- API Settings Button -->
-        <div style="margin-bottom: 20px;">
-            <button id="apiBtn" style="background: #ec4899;">⚙️ API Key Settings</button>
+            <label for="apiKey">OpenAI API Key</label>
+            <input type="password" id="apiKey" placeholder="sk-...">
+            <a href="https://platform.openai.com/api-keys" target="_blank">Get API Key →</a>
+
+            <button id="saveBtn">Save Key</button>
+
+            <small style="margin-top: 30px;">Keys are stored locally in your browser.</small>
         </div>
 
-        <!-- API Settings Modal -->
-        <div id="apiModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>🔑 API Key Settings</h2>
-                    <button class="close-btn" id="closeBtn">&times;</button>
-                </div>
+        <!-- RIGHT: Chat -->
+        <div class="right">
+            <h2>Chat</h2>
 
-                <p style="color: #94a3b8; margin-bottom: 20px;">Enter your API keys below. Keys are stored locally in your browser only.</p>
-
-                <div class="api-group">
-                    <label for="openaiKey">OpenAI API Key</label>
-                    <input type="password" id="openaiKey" placeholder="sk-...">
-                    <a href="https://platform.openai.com/api-keys" target="_blank" class="get-key-link">Get Free Key</a>
-                    <small>✅ $5 free credits for new accounts</small>
-                </div>
-
-                <div class="api-group">
-                    <label for="googleKey">Google Gemini API Key</label>
-                    <input type="password" id="googleKey" placeholder="AIz...">
-                    <a href="https://aistudio.google.com/app/apikey" target="_blank" class="get-key-link">Get Free Key</a>
-                    <small>✅ FREE: 50 req/min, 1.5M daily tokens</small>
-                </div>
-
-                <div class="api-group">
-                    <label for="cohereKey">Cohere API Key</label>
-                    <input type="password" id="cohereKey" placeholder="...">
-                    <a href="https://dashboard.cohere.ai/" target="_blank" class="get-key-link">Get Free Key</a>
-                    <small>✅ FREE: Unlimited requests</small>
-                </div>
-
-                <div class="api-group">
-                    <label for="groqKey">Groq API Key</label>
-                    <input type="password" id="groqKey" placeholder="gsk_...">
-                    <a href="https://console.groq.com/" target="_blank" class="get-key-link">Get Free Key</a>
-                    <small>⚡ FASTEST inference available</small>
-                </div>
-
-                <div class="api-group">
-                    <label for="mistralKey">Mistral API Key</label>
-                    <input type="password" id="mistralKey" placeholder="...">
-                    <a href="https://console.mistral.ai/" target="_blank" class="get-key-link">Get Free Key</a>
-                    <small>✅ FREE: 50,000 tokens/day</small>
-                </div>
-
-                <div class="api-group">
-                    <label for="togetherKey">Together AI API Key</label>
-                    <input type="password" id="togetherKey" placeholder="...">
-                    <a href="https://www.together.ai/" target="_blank" class="get-key-link">Get Free Key</a>
-                    <small>✅ FREE: New account credits</small>
-                </div>
-
-                <button id="saveBtn" style="background: #10b981;">💾 Save Keys</button>
-                <button id="closeBtn2" style="background: #64748b;">Close</button>
-            </div>
-        </div>
-
-        <!-- Playground Section -->
-        <div class="section">
-            <h2>🎮 AI Playground</h2>
-
-            <label for="modelSelect">Select a Model:</label>
-            <select id="modelSelect">
-                <option value="">-- Choose a model --</option>
+            <label for="model">Model</label>
+            <select id="model">
+                <option value="gpt-4o">GPT-4o</option>
             </select>
 
-            <label for="prompt">Your Prompt:</label>
-            <textarea id="prompt" rows="6" placeholder="Ask me anything..."></textarea>
+            <label for="prompt">Message</label>
+            <textarea id="prompt" placeholder="Type your message..."></textarea>
 
-            <button id="sendBtn" style="background: #10b981;">🚀 Send to AI</button>
+            <button id="sendBtn">Send</button>
 
-            <div class="loading" id="loading">
-                <div class="spinner"></div>
-                <p>Thinking...</p>
-            </div>
+            <div class="loading" id="loading">Thinking...</div>
 
-            <div class="response" id="response">
-                <h3>Response:</h3>
-                <div id="responseText"></div>
-            </div>
-        </div>
-
-        <!-- Models Info -->
-        <div class="section">
-            <h2>📚 Available Models</h2>
-            <div id="modelsInfo"></div>
+            <div class="response" id="response"></div>
         </div>
     </div>
 
-    <!-- Models Data -->
     <script>
-        const models = [
-            {
-                id: 'gpt-4o',
-                name: 'GPT-4o (OpenAI)',
-                provider: 'openai',
-                description: 'Latest multimodal model - best quality',
-                docs: 'https://platform.openai.com/docs/models/gpt-4o',
-                website: 'https://openai.com'
-            },
-            {
-                id: 'gpt-4-turbo',
-                name: 'GPT-4 Turbo (OpenAI)',
-                provider: 'openai',
-                description: 'High-performance model with 128K context',
-                docs: 'https://platform.openai.com/docs/models/gpt-4-turbo',
-                website: 'https://openai.com'
-            },
-            {
-                id: 'gemini-pro',
-                name: 'Gemini Pro (Google)',
-                provider: 'google',
-                description: 'Google\'s latest multimodal model',
-                docs: 'https://ai.google.dev/docs',
-                website: 'https://aistudio.google.com'
-            },
-            {
-                id: 'command-r-plus',
-                name: 'Command R+ (Cohere)',
-                provider: 'cohere',
-                description: 'High-performance language model',
-                docs: 'https://docs.cohere.com/docs/models',
-                website: 'https://cohere.ai'
-            },
-            {
-                id: 'mixtral-8x7b-32768',
-                name: 'Mixtral 8x7B (Groq)',
-                provider: 'groq',
-                description: 'Fast MoE model - incredible speed',
-                docs: 'https://console.groq.com/docs/models',
-                website: 'https://groq.com'
-            },
-            {
-                id: 'mistral-large-latest',
-                name: 'Mistral Large (Mistral)',
-                provider: 'mistral',
-                description: 'Advanced reasoning model',
-                docs: 'https://docs.mistral.ai/capabilities/function_calling/',
-                website: 'https://mistral.ai'
-            },
-            {
-                id: 'meta-llama-2-70b-chat',
-                name: 'Llama 2 70B (Together AI)',
-                provider: 'together',
-                description: 'Open source model via Together AI',
-                docs: 'https://www.together.ai/docs',
-                website: 'https://www.together.ai'
-            }
-        ];
-    </script>
-
-    <!-- Main JavaScript -->
-    <script>
-        // Initialize on page load
+        // Load saved API key on page load
         window.addEventListener('load', function() {
-            populateModels();
-            loadSavedKeys();
-            setupEventListeners();
+            const saved = localStorage.getItem('openaiApiKey');
+            if (saved) {
+                document.getElementById('apiKey').value = saved;
+            }
         });
 
-        // Populate model dropdown
-        function populateModels() {
-            const select = document.getElementById('modelSelect');
-            select.innerHTML = '<option value="">-- Choose a model --</option>';
-            
-            models.forEach(model => {
-                const option = document.createElement('option');
-                option.value = model.id;
-                option.textContent = model.name;
-                select.appendChild(option);
-            });
+        // Save API key
+        document.getElementById('saveBtn').addEventListener('click', function() {
+            const key = document.getElementById('apiKey').value.trim();
+            if (!key) {
+                alert('Please enter an API key');
+                return;
+            }
+            localStorage.setItem('openaiApiKey', key);
+            alert('✓ Key saved');
+        });
 
-            displayModelsInfo();
-        }
+        // Send message
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
 
-        // Display models info
-        function displayModelsInfo() {
-            const container = document.getElementById('modelsInfo');
-            container.innerHTML = '';
+        // Send on Ctrl+Enter
+        document.getElementById('prompt').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                sendMessage();
+            }
+        });
 
-            models.forEach(model => {
-                const div = document.createElement('div');
-                div.style.marginBottom = '15px';
-                div.innerHTML = `
-                    <h3 style="color: #60a5fa; margin-bottom: 8px;">${model.name}</h3>
-                    <p>${model.description}</p>
-                    <a href="${model.docs}" target="_blank" class="get-key-link">📖 Docs</a>
-                    <a href="${model.website}" target="_blank" class="get-key-link" style="margin-left: 10px;">🌐 Website</a>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // Setup event listeners
-        function setupEventListeners() {
-            document.getElementById('apiBtn').addEventListener('click', openModal);
-            document.getElementById('closeBtn').addEventListener('click', closeModal);
-            document.getElementById('closeBtn2').addEventListener('click', closeModal);
-            document.getElementById('saveBtn').addEventListener('click', saveKeys);
-            document.getElementById('sendBtn').addEventListener('click', sendMessage);
-
-            document.getElementById('apiModal').addEventListener('click', function(e) {
-                if (e.target === this) closeModal();
-            });
-        }
-
-        // Modal functions
-        function openModal() {
-            document.getElementById('apiModal').classList.add('show');
-        }
-
-        function closeModal() {
-            document.getElementById('apiModal').classList.remove('show');
-        }
-
-        // Save API keys
-        function saveKeys() {
-            localStorage.setItem('openaiKey', document.getElementById('openaiKey').value);
-            localStorage.setItem('googleKey', document.getElementById('googleKey').value);
-            localStorage.setItem('cohereKey', document.getElementById('cohereKey').value);
-            localStorage.setItem('groqKey', document.getElementById('groqKey').value);
-            localStorage.setItem('mistralKey', document.getElementById('mistralKey').value);
-            localStorage.setItem('togetherKey', document.getElementById('togetherKey').value);
-            alert('✅ API keys saved locally!');
-            closeModal();
-        }
-
-        // Load saved API keys
-        function loadSavedKeys() {
-            document.getElementById('openaiKey').value = localStorage.getItem('openaiKey') || '';
-            document.getElementById('googleKey').value = localStorage.getItem('googleKey') || '';
-            document.getElementById('cohereKey').value = localStorage.getItem('cohereKey') || '';
-            document.getElementById('groqKey').value = localStorage.getItem('groqKey') || '';
-            document.getElementById('mistralKey').value = localStorage.getItem('mistralKey') || '';
-            document.getElementById('togetherKey').value = localStorage.getItem('togetherKey') || '';
-        }
-
-        // Send message to AI
         async function sendMessage() {
-            const modelId = document.getElementById('modelSelect').value;
+            const apiKey = localStorage.getItem('openaiApiKey');
             const prompt = document.getElementById('prompt').value.trim();
 
-            if (!modelId) {
-                alert('Please select a model');
+            if (!apiKey) {
+                alert('Please save your API key first');
                 return;
             }
 
             if (!prompt) {
-                alert('Please enter a prompt');
+                alert('Please enter a message');
                 return;
             }
 
-            const model = models.find(m => m.id === modelId);
-            const apiKey = localStorage.getItem(model.provider + 'Key');
-
-            if (!apiKey) {
-                alert(`Please add your ${model.provider} API key in the settings`);
-                return;
-            }
-
-            showLoading(true);
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('response').classList.remove('show');
 
             try {
-                let response;
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o',
+                        messages: [{ role: 'user', content: prompt }],
+                        max_tokens: 2048
+                    })
+                });
 
-                if (model.provider === 'openai') {
-                    response = await callOpenAI(prompt, apiKey);
-                } else if (model.provider === 'google') {
-                    response = await callGoogle(prompt, apiKey);
-                } else if (model.provider === 'cohere') {
-                    response = await callCohere(prompt, apiKey);
-                } else if (model.provider === 'groq') {
-                    response = await callGroq(prompt, apiKey);
-                } else if (model.provider === 'mistral') {
-                    response = await callMistral(prompt, apiKey);
-                } else if (model.provider === 'together') {
-                    response = await callTogether(prompt, apiKey);
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error?.message || 'API Error');
                 }
 
-                displayResponse(response);
+                const data = await response.json();
+                const text = data.choices[0].message.content;
+
+                document.getElementById('response').textContent = text;
+                document.getElementById('response').classList.add('show');
             } catch (error) {
-                displayResponse('❌ Error: ' + error.message);
+                document.getElementById('response').textContent = '❌ ' + error.message;
+                document.getElementById('response').classList.add('show');
             } finally {
-                showLoading(false);
+                document.getElementById('loading').classList.remove('show');
             }
-        }
-
-        // API Functions
-        async function callOpenAI(prompt, apiKey) {
-            const res = await fetch('https://api.openai.com/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    model: 'gpt-4o',
-                    messages: [{ role: 'user', content: prompt }],
-                    max_tokens: 1024
-                })
-            });
-
-            if (!res.ok) throw new Error('OpenAI API error');
-            const data = await res.json();
-            return data.choices[0].message.content;
-        }
-
-        async function callGoogle(prompt, apiKey) {
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }]
-                })
-            });
-
-            if (!res.ok) throw new Error('Google API error');
-            const data = await res.json();
-            return data.candidates[0].content.parts[0].text;
-        }
-
-        async function callCohere(prompt, apiKey) {
-            const res = await fetch('https://api.cohere.ai/v1/generate', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    prompt: prompt,
-                    max_tokens: 500
-                })
-            });
-
-            if (!res.ok) throw new Error('Cohere API error');
-            const data = await res.json();
-            return data.generations[0].text;
-        }
-
-        async function callGroq(prompt, apiKey) {
-            const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    model: 'mixtral-8x7b-32768',
-                    messages: [{ role: 'user', content: prompt }],
-                    max_tokens: 1024
-                })
-            });
-
-            if (!res.ok) throw new Error('Groq API error');
-            const data = await res.json();
-            return data.choices[0].message.content;
-        }
-
-        async function callMistral(prompt, apiKey) {
-            const res = await fetch('https://api.mistral.ai/v0.0/chat', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    model: 'mistral-large-latest',
-                    messages: [{ role: 'user', content: prompt }],
-                    max_tokens: 1024
-                })
-            });
-
-            if (!res.ok) throw new Error('Mistral API error');
-            const data = await res.json();
-            return data.choices[0].message.content;
-        }
-
-        async function callTogether(prompt, apiKey) {
-            const res = await fetch('https://api.together.xyz/inference', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    model: 'meta-llama/Llama-2-70b-chat-hf',
-                    prompt: prompt,
-                    max_tokens: 1024
-                })
-            });
-
-            if (!res.ok) throw new Error('Together AI API error');
-            const data = await res.json();
-            return data.output.choices[0].text;
-        }
-
-        // Display response
-        function displayResponse(text) {
-            document.getElementById('responseText').textContent = text;
-            document.getElementById('response').classList.add('show');
-        }
-
-        // Show/hide loading
-        function showLoading(show) {
-            document.getElementById('loading').classList.toggle('show', show);
         }
     </script>
 </body>
