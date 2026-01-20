@@ -1,26 +1,51 @@
 // Initialize the app
 document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
-    loadImagePreview();
-    setupEventListeners();
+    console.log('DOM loaded, models available:', typeof models !== 'undefined');
+    if (typeof models !== 'undefined') {
+        initializeApp();
+        loadImagePreview();
+        setupEventListeners();
+    } else {
+        console.error('Models not loaded! Retrying in 500ms...');
+        setTimeout(() => {
+            if (typeof models !== 'undefined') {
+                initializeApp();
+                loadImagePreview();
+                setupEventListeners();
+            }
+        }, 500);
+    }
 });
 
 // Initialize the app - populate models and UI
 function initializeApp() {
-    populateModelSelect();
-    renderModelsGrid();
-    renderModelsInfo();
+    try {
+        populateModelSelect();
+        renderModelsGrid();
+        renderModelsInfo();
+    } catch (e) {
+        console.error('Error initializing app:', e);
+    }
 }
 
 // Populate the model select dropdown
 function populateModelSelect() {
     const select = document.getElementById('model-select');
+    if (!select) {
+        console.error('model-select element not found');
+        return;
+    }
+    if (!models || models.length === 0) {
+        console.error('models not loaded or empty');
+        return;
+    }
     models.forEach(model => {
         const option = document.createElement('option');
         option.value = model.id;
         option.textContent = `${model.icon} ${model.name} (${model.provider})`;
         select.appendChild(option);
     });
+    console.log('Model dropdown populated with', models.length, 'models');
 }
 
 // Render models as grid cards
@@ -95,15 +120,71 @@ function renderModelsInfo() {
 
 // Setup event listeners
 function setupEventListeners() {
+    // Image input
     const imageInput = document.getElementById('image-input');
-    imageInput.addEventListener('change', loadImagePreview);
+    if (imageInput) {
+        imageInput.addEventListener('change', loadImagePreview);
+    }
     
+    // Text input with Ctrl+Enter support
     const textInput = document.getElementById('text-input');
-    textInput.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === 'Enter') {
+    if (textInput) {
+        textInput.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                sendToModel();
+            }
+        });
+    }
+    
+    // Send button - explicit event listener for better mobile support
+    const sendBtn = document.getElementById('sendBtn');
+    if (sendBtn) {
+        sendBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Send button clicked');
             sendToModel();
-        }
-    });
+        });
+    }
+    
+    // API Settings button
+    const apiSettingsBtn = document.getElementById('apiSettingsBtn');
+    if (apiSettingsBtn) {
+        apiSettingsBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('API Settings button clicked');
+            openApiModal();
+        });
+    }
+    
+    // Close modal button (X button)
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Close modal button clicked');
+            closeApiModal();
+        });
+    }
+    
+    // Close modal button (bottom Close button)
+    const closeModalBtn2 = document.getElementById('closeModalBtn2');
+    if (closeModalBtn2) {
+        closeModalBtn2.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Close modal button 2 clicked');
+            closeApiModal();
+        });
+    }
+    
+    // Save API keys button
+    const saveKeysBtn = document.getElementById('saveKeysBtn');
+    if (saveKeysBtn) {
+        saveKeysBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Save keys button clicked');
+            saveApiKeys();
+        });
+    }
 }
 
 // Load and display image preview
@@ -124,14 +205,32 @@ function loadImagePreview() {
 
 // Open API Settings Modal
 function openApiModal() {
-    document.getElementById('apiModal').classList.add('show');
-    loadSavedKeys();
+    console.log('Opening API modal');
+    const modal = document.getElementById('apiModal');
+    if (modal) {
+        modal.classList.add('show');
+        loadSavedKeys();
+    } else {
+        console.error('apiModal element not found');
+    }
 }
 
 // Close API Settings Modal
 function closeApiModal() {
-    document.getElementById('apiModal').classList.remove('show');
+    console.log('Closing API modal');
+    const modal = document.getElementById('apiModal');
+    if (modal) {
+        modal.classList.remove('show');
+    }
 }
+
+// Close modal when clicking outside
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('apiModal');
+    if (modal && event.target === modal) {
+        closeApiModal();
+    }
+});
 
 // Update model info when selection changes
 function updateModelInfo() {

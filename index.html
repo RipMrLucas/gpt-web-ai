@@ -547,14 +547,14 @@
             <p>Access free AI models for text and image processing</p>
         </header>
         <!-- API Settings Button -->
-        <button class="api-settings-btn" onclick="openApiModal()">⚙️ API Key Settings</button>
+        <button class="api-settings-btn" id="apiSettingsBtn" onclick="openApiModal()">⚙️ API Key Settings</button>
 
         <!-- API Keys Modal -->
         <div id="apiModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2>🔑 API Key Settings</h2>
-                    <button class="close-btn" onclick="closeApiModal()">✕</button>
+                    <button class="close-btn" id="closeModalBtn" onclick="closeApiModal()">✕</button>
                 </div>
 
                 <p style="color: var(--text-muted); margin-bottom: 20px;">Enter your API keys below. Keys are stored locally in your browser only.</p>
@@ -632,8 +632,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button class="save-keys-btn" onclick="saveApiKeys()">💾 Save Keys</button>
-                    <button class="close-modal-btn" onclick="closeApiModal()">Close</button>
+                    <button class="save-keys-btn" id="saveKeysBtn" onclick="saveApiKeys()">💾 Save Keys</button>
+                    <button class="close-modal-btn" id="closeModalBtn2" onclick="closeApiModal()">Close</button>
                 </div>
             </div>
         </div>
