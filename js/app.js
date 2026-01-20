@@ -17,6 +17,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Fallback initialization on window load
+window.addEventListener('load', function() {
+    if (!window.appInitialized && typeof models !== 'undefined') {
+        console.log('Window load event - initializing app');
+        initializeApp();
+        loadImagePreview();
+        setupEventListeners();
+        window.appInitialized = true;
+    }
+});
+
 // Initialize the app - populate models and UI
 function initializeApp() {
     try {
@@ -674,7 +685,7 @@ function saveApiKeys() {
 
 // Load saved API keys
 function loadSavedKeys() {
-    const keys = ['anthropic-key', 'google-key', 'replicate-key', 'huggingface-key'];
+    const keys = ['openai-key', 'google-key', 'cohere-key', 'groq-key', 'mistral-key', 'together-key', 'replicate-key', 'huggingface-key'];
     keys.forEach(key => {
         const saved = localStorage.getItem(key);
         const input = document.getElementById(key);
