@@ -1,4 +1,18 @@
 const models = [
+    // FREE - No API Key Required
+    {
+        id: 'free-demo',
+        name: 'Demo Model (No Key)',
+        provider: 'Demo',
+        capabilities: ['text'],
+        description: 'Test model - replies with a demo message. No API key needed!',
+        freeLimit: '✅ Unlimited (Demo)',
+        docs: 'https://github.com/RipMrLucas/gpt-web-ai',
+        website: 'https://github.com/RipMrLucas/gpt-web-ai',
+        icon: '🎯',
+        verified: true
+    },
+    
     // OpenAI Models - ✅ VERIFIED: GPT-4o, GPT-4 Turbo available. $5 free credits for new accounts
     {
         id: 'gpt-4o',

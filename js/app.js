@@ -276,8 +276,12 @@ async function sendToModel() {
     try {
         let response;
         
+        // Demo model - no API key needed
+        if (model.provider === 'Demo') {
+            response = `✅ Demo Response\n\nYou asked: "${textInput}"\n\nThis is a demo model that works without an API key!\n\nTo use real AI models like GPT-4, Google Gemini, etc., you need to:\n1. Click "⚙️ API Key Settings" above\n2. Get a free API key from one of the providers\n3. Save your key\n4. Select a model and send a prompt\n\nReady to try real models?`;
+        }
         // Route to appropriate API based on provider
-        if (model.provider === 'OpenAI') {
+        else if (model.provider === 'OpenAI') {
             response = await callOpenAI(model, textInput, imageInput.files[0]);
         } else if (model.provider === 'Google') {
             response = await callGoogle(model, textInput, imageInput.files[0]);
