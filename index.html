@@ -216,11 +216,23 @@
     </div>
 
     <script>
-        // Load saved API key on page load
-        window.addEventListener('load', function() {
-            const saved = localStorage.getItem('openaiApiKey');
-            if (saved) {
-                document.getElementById('apiKey').value = saved;
+        // Load API keys from file
+        window.addEventListener('load', async function() {
+            try {
+                const response = await fetch('apikeys.json');
+                if (response.ok) {
+                    const keys = await response.json();
+                    if (keys.openai) {
+                        document.getElementById('apiKey').value = keys.openai;
+                        localStorage.setItem('openaiApiKey', keys.openai);
+                    }
+                }
+            } catch (e) {
+                // File not found or error - try localStorage
+                const saved = localStorage.getItem('openaiApiKey');
+                if (saved) {
+                    document.getElementById('apiKey').value = saved;
+                }
             }
         });
 
